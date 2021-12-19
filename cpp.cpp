@@ -1317,7 +1317,7 @@ do_actual_work (std::string file_name, std::istream &instream,
 
         }
         ~fs_path_imbue_utf8()
-        {
+        { 
             if (!m_enabled) return;
             boost::filesystem::path::imbue(m_prevLocale);
         }
@@ -1331,13 +1331,14 @@ do_actual_work (std::string file_name, std::istream &instream,
     };
 
 
-
+#include <windows.h>
 ///////////////////////////////////////////////////////////////////////////////
 //  main entry point
 int
 main (int argc, char *argv[])
 {
-
+    
+ 
     std::string use_utf8;
    
     fs_path_imbue_utf8 to_utf8(true);
@@ -1475,9 +1476,10 @@ main (int argc, char *argv[])
         {
             std::string str = base::a2u(argv[i]);
 
-            char* data = new char[str.size()];
+            char* data = new char[str.size() + 1];
             strncpy(data, str.c_str(), str.size());
-
+            data[str.size()] = '\0';
+            fakeArgv[i] = data;
         }
         po::parsed_options opts(po::parse_command_line(argc, fakeArgv,
             desc_overall_cmdline, unix_style, cmd_line_utils::at_option_parser));
